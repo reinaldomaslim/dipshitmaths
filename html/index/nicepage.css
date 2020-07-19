@@ -28386,6 +28386,14 @@ a.u-link.u-text-hover-grey-90:hover {
         margin-top: 20px;
         margin-bottom: 20px;
     }
+    .u-body
+    {
+        background-image: url("https://pixabay.com/get/52e1d6454255b108f5d084609629317e113fdce15b4c704c7c2a7ad19e4fc759_1280.jpg");
+        background-attachment: fixed;
+        background-size: cover;
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
+    }
     /** common-rules **/
 
     /** publish-rules **/
