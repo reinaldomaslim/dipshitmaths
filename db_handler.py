@@ -8,7 +8,7 @@ class DBHandler:
     def __init__(self, db_file):
         # Create DB
         try:
-            self.conn = sqlite3.connect(db_file, timeout=10, check_same_thread=False)
+            self.conn = sqlite3.connect(db_file, timeout=10)
         except Error as e:
             print(e)
             exit(0)
