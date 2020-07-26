@@ -25,10 +25,15 @@ def index():
 
 @app.route("/subscribe", methods=["POST"])
 def subscribe():
-    user = [request.form['email'], 0, datetime.now().strftime("%Y-%m-%d"), datetime.now().strftime("%Y-%m-%d"), 0, 0]        
-
     try:
-        get_db_handler().insert_user(user)
+        engine = get_db_handler()
+        engine.insert_user(
+            email=request.form["email"],
+            purchased=False,
+            lastSent=datetime.now(),
+            unsubscribed=False,
+            deactivated=False
+        )
         print(f"Email subscribed: {request.form['email']}")
         return jsonify(success=True)
     except Exception as e:
