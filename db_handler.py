@@ -1,141 +1,103 @@
-import sqlite3
-from sqlite3 import Error
+from sqlalchemy import create_engine, Table, Column, Integer, String, Boolean, DateTime, MetaData
+from sqlalchemy.sql import select, delete
 from datetime import datetime
 
+metadata = MetaData()
 
-class DBHandler:
+# Tables
+# TODO: Discuss column attributes' constraints
+Users = Table(
+    "users",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("email", String(length=100), nullable=False, unique=True),
+    Column("purchased", Boolean, nullable=False),
+    Column("created", DateTime),
+    Column("lastSent", DateTime),
+    Column("unsubscribed", Boolean, nullable=False),
+    Column("deactivated", Boolean, nullable=False))
 
-    def __init__(self, db_file):
-        # Create DB
-        try:
-            self.conn = sqlite3.connect(db_file, timeout=10)
-        except Error as e:
-            print(e)
-            exit(0)
-        except Exception as e:
-            print(e)
-            exit(0)
+Problems = Table(
+    "problems",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("filename", String(length=200), unique=True, nullable=False))
 
-        # # Flush tables
-        # self.delete_table("users")
-        # self.delete_table("problems")
+EmailConfirmation = Table(
+    "email-confirmation",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("email", String(length=100), nullable=False, unique=True),
+    Column("created", DateTime, nullable=False),
+    Column("referid", String(length=100), nullable=False))
 
-        # # Initialize tables and problems
-        # self._initialize_tables()
-        # self._add_dummy_problems()
 
-    def create_table(self, sql):
-        try:
-            c = self.conn.cursor()
-            c.execute(sql)
-        except Error as e:
-            print(e)
-        except Error as e:
-            print(e)
+class DBEngine:
+    def __init__(self, db_path):
+        self._db_path = db_path
+        self._engine = create_engine(f"sqlite:///{self._db_path}", echo=True)
+        self._conn = self._engine.connect()
+        self._users = Users
+        self._problems = Problems
+        self._email_confirmation = EmailConfirmation
+        metadata.create_all(self._engine)
+        self._initialize_db()
 
-    def insert_problem(self, msg):
-        sql = ''' INSERT OR IGNORE INTO problems(filename)
-                  VALUES(?)
-              '''
-        cur = self.conn.cursor()
-        cur.execute(sql, msg)
-        self.conn.commit()
-        return cur.lastrowid
+    @property
+    def handler(self):
+        return self
 
-    def insert_user(self, msg):
-        sql = ''' INSERT OR IGNORE INTO users(email,purchased,created,lastSent,unsubscribe,deactivated)
-                  VALUES(?,?,?,?,?,?) 
-              '''
-        cur = self.conn.cursor()
-        cur.execute(sql, msg)
-        self.conn.commit()
-        return cur.lastrowid
+    def _initialize_db(self):
+        # Dummy users
+        self.insert_user(
+            email="reinaldomaslim@gmail.com",
+            purchased=False,
+            lastSent=datetime.now(),
+            unsubscribed=False,
+            deactivated=False)
+        self.insert_user(
+            email="e0403962@u.nus.edu",
+            purchased=False,
+            lastSent=datetime.now(),
+            unsubscribed=False,
+            deactivated=False)
 
-    def select_all(self, table):
-        cur = self.conn.cursor()
-        cur.execute("SELECT * FROM " + table)
-        rows = cur.fetchall()
-        return rows
+        # Dummy problems
+        self.insert_problem("./compendium/findx.pdf")
+        self.insert_problem("./compendium/findy.pdf")
+        print(self._users_select_all())
 
-    def update_problem(self, msg):
-        sql = ''' UPDATE problems
-                SET filename = ?
-                WHERE id = ?'''
+    def insert_user(self, email, purchased, lastSent, unsubscribed, deactivated):
+        ins = self._users.insert().prefix_with("OR IGNORE").values(
+            email=email,
+            purchased=purchased,
+            created=datetime.now(),
+            lastSent=lastSent,
+            unsubscribed=unsubscribed,
+            deactivated=deactivated)
+        self._conn.execute(ins)
 
-        cur = self.conn.cursor()
-        cur.execute(sql, msg)
-        self.conn.commit()
+    def insert_email_confirmation(self, email, referid):
+        ins = self._email_confirmation.insert().prefix_with("OR IGNORE").values(
+            email=email,
+            created=datetime.now(),
+            referid=referid)
+        self._conn.execute(ins)
 
-    def update_user(self, msg):
-        sql = ''' UPDATE users
-                SET email = ? ,
-                    purchased = ?,
-                    created = ?,
-                    lastSent = ?,
-                    unsubscribe = ?,
-                    deactivated =? 
-                WHERE id = ?'''
+    def select_email_confirmation(self, email):
+        ins = select([self._email_confirmation]).where(self._email_confirmation.c.email == email)
+        result = self._conn.execute(ins).fetchone()
+        return dict(result or {})
 
-        cur = self.conn.cursor()
-        cur.execute(sql, msg)
-        self.conn.commit()
+    def delete_email_confirmation(self, email):
+        ins = self._email_confirmation.delete().where(self._email_confirmation.c.email == email)
+        self._conn.execute(ins)
 
-    def delete_table(self, table):
-        try:
-            sql = 'DROP TABLE '+table
-            cur = self.conn.cursor()
-            cur.execute(sql)
-            self.conn.commit()
-        except Error as e:
-            print(e)
-        except Exception as e:
-            print(e)
+    def insert_problem(self, filename):
+        ins = self._problems.insert().prefix_with("OR IGNORE").values(filename=filename)
+        self._conn.execute(ins)
 
-    def delete_all_rows(self, table):
-        sql = 'DELETE FROM ' + table
-        cur = self.conn.cursor()
-        cur.execute(sql)
-        self.conn.commit()
-
-    def delete(self, table, id):
-        sql = 'DELETE FROM ' + table + ' WHERE id=?'
-        cur = self.conn.cursor()
-        cur.execute(sql, (id,))
-        self.conn.commit()
-
-    def _add_dummy_problems(self):
-        with self.conn:
-            # Add dummy problems
-            prob1 = ['./compendium/findx.pdf']
-            prob2 = ['./compendium/findy.pdf']
-            self.insert_problem(prob1)
-            self.insert_problem(prob2)
-
-            # Add dummy users
-            user1 = ['reinaldomaslim@gmail.com', 0, datetime.now().strftime("%Y-%m-%d"), datetime.now().strftime("%Y-%m-%d"), 0, 0]
-            user2 = ['e0403962@u.nus.edu', 0, datetime.now().strftime("%Y-%m-%d"), datetime.now().strftime("%Y-%m-%d"), 0, 0]
-            self.insert_user(user1)
-            self.insert_user(user2)
-
-            print(self.select_all("users"))
-
-    def _initialize_tables(self):
-        sql_create_users_table = """CREATE TABLE IF NOT EXISTS users (
-                                    id integer PRIMARY KEY,
-                                    email text,
-                                    purchased boolean NOT NULL,
-                                    created datetime,
-                                    lastSent datetime,
-                                    unsubscribe boolean NOT NULL,
-                                    deactivated boolean NOT NULL,
-                                    UNIQUE(email)
-                                    )
-                                    ;"""
-        self.create_table(sql_create_users_table)
-
-        sql_create_problems_table = """CREATE TABLE IF NOT EXISTS problems (
-                                    pid integer PRIMARY KEY,
-                                    filename text,
-                                    UNIQUE(filename)
-                                    );"""
-        self.create_table(sql_create_problems_table)
+    def _users_select_all(self):
+        ins = select([self._users])
+        result = self._conn.execute(ins)
+        return [dict(row) for row in result]
