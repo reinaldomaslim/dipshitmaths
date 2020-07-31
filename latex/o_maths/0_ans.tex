@@ -1,0 +1,172 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amsmath}
+\usepackage[makeroom]{cancel}
+
+\newcommand{\Mod}[1]{\ (\mathrm{mod}\ #1)}
+
+
+\begin{document}	
+
+\textbf{\textit{Dipshitmaths}}
+
+\begin{flushright}
+	O-LEVEL 
+	
+	MATHEMATICS
+	
+	PROBLEM SET-WEEK 0
+\end{flushright}
+
+\begin{enumerate}
+	\item  Simplify $\frac{4p^2r}{3}\div\frac{2r^3}{p}$
+	
+	\[
+		\frac{4p^2r}{3}\div\frac{2r^3}{p}
+	\]
+	\[
+		= \frac{4p^2r}{3}\times\frac{p}{2r^3}
+	\]
+	\[
+		= \frac{\cancel{4}2p^2\cancel{r}}{3}\times\frac{p}{\cancel{2}\cancel{r^3}r^2}
+	\]
+	\[
+		= \frac{2p^3}{3r^2}
+	\]
+		
+		
+	\item $a=\frac{3b+4c}{5-b}$
+		\begin{enumerate}
+			\item Evaluate $a$ when $b=6$ and $c=-2$
+			\[
+				a = \frac{3b+4c}{5-b}
+			\]
+			\[
+				= \frac{3(6)+4(-2)}{5-(6)}
+			\]
+			\[
+				= \frac{18-8}{-1} 
+			\]
+			\[
+				= -10
+			\]
+			
+			\item Express $b$ in terms of $a$ and $c$
+			\[
+				a = \frac{3b+4c}{5-b}
+			\]
+			\[
+				a(5-b) = 3b+4c
+			\]
+			\[
+				5a-ab = 3b+4c
+			\]
+			\[
+				5a-4c = 3b+ab
+			\]
+			\[
+				5a-4c = b(3+a)
+			\]
+			\[
+				b = \frac{a+3}{5a-4c}
+			\]
+		\end{enumerate}
+
+	\item 
+		\begin{enumerate}
+			\item Express $9-7x+x^2$ in the form $p+(q+x)^2$
+			
+			\[
+				p+(q+x)^2 = 9-7x+x^2
+			\]
+			\[
+				p + (q+x)(q+x) = p + q^2 + 2qx + x^2 = 9-7x+x^2
+			\]
+			Solving for each terms,	
+			\[
+				2qx = -7x
+			\]
+			\[
+				q = -7/2 = -3.5
+			\]
+			\[
+				p + q^2 = 9
+			\]
+			\[
+				p = 9 - q^2 = 9 - (3.5)^2 = 9 - 12.25 = -3.25
+			\]
+			
+			
+			\item Write down the coordinates of the minimum point of the graph of $9-7x+x^2$
+			
+			Minimum point occurs when first derivative/tangent of the graph equals to zero
+			\[
+				y = 9-7x+x^2
+			\]
+			\[
+				\frac{dy}{dx} = -7 + 2x = 0			
+			\]
+			\[
+				x = 3.5
+			\]
+			\[
+				y = 9 - 7(3.5) + (3.5)^2 = 9 - 24.5 + 12.25 = -3.25
+			\]
+			
+			
+		\end{enumerate}
+	
+	\item Solve $\frac{1}{x-3} + \frac{6}{x-1} = 2$
+	\[
+		\frac{1}{x-3} + \frac{6}{x-1} 	
+	\]
+	\[
+		= \frac{x-1}{(x-3)(x-1)} + \frac{6(x-3)}{(x-3)(x-1)}  
+	\]
+	\[
+		= \frac{(x-1) + 6(x-3)}{(x-3)(x-1)} 
+	\]
+	\[
+		= \frac{x-1+6x-18}{x^2-4x+3}
+	\]
+	\[
+		= \frac{7x-19}{x^2-4x+3}
+	\]
+	We know that
+	\[
+		\frac{7x-19}{x^2-4x+3} = 2
+	\]
+	\[
+		7x-19 = 2(x^2-4x+3) = 2x^2-8x+6
+	\]
+	\[
+		0 = 2x^2-8x-7x+6+19 = 2x^2-15x+25
+	\]
+	Factorizing,
+	\[
+		2x^2-15x+21 = (2x-5)(x-5) = 0
+	\]
+	Thus we have two solutions $2x-5 = 0$ and $x-5=0$
+	
+	\[
+		2x_1-5 = 0
+	\]
+	\[
+		x_1 = 5/2 = 2.5
+	\]
+	\[
+		x_2-5 = 0
+	\]
+	\[
+		x_2 = 5
+	\]
+	
+	
+	
+\end{enumerate}
+
+
+
+\end{document}

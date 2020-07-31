@@ -4,13 +4,11 @@ from datetime import datetime
 
 DATABASE_NAME = r"./sqlite.db"
 
-
 def get_db_handler():
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = DBHandler(DATABASE_NAME)
     return db
-
 
 app = Flask(__name__,
             template_folder="html/index",

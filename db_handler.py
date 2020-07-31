@@ -16,13 +16,13 @@ class DBHandler:
             print(e)
             exit(0)
 
-        # Flush tables
-        self.delete_table("users")
-        self.delete_table("problems")
+        # # Flush tables
+        # self.delete_table("users")
+        # self.delete_table("problems")
 
-        # Initialize tables and problems
-        self._initialize_tables()
-        self._add_dummy_problems()
+        # # Initialize tables and problems
+        # self._initialize_tables()
+        # self._add_dummy_problems()
 
     def create_table(self, sql):
         try:
